@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Zoom</title>
+    <title>Image Zoom and Pan</title>
     <style>
         body {
             display: flex;
@@ -17,21 +17,30 @@
             touch-action: none;
             position: relative;
             overflow: hidden;
+            width: 100vw;
+            height: 100vh;
         }
         img {
             max-width: 100%;
             transform-origin: center;
             transition: transform 0.2s ease-in-out;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img id="image" src="oneRiel1970.jpg" alt="Zoomable Image">
+        <img id="image" src="your-image.jpg" alt="Zoomable Image">
     </div>
     <script>
         let img = document.getElementById("image");
         let scale = 1, startDistance = 0;
+        let posX = 0, posY = 0;
+        let startX = 0, startY = 0;
+        let isDragging = false;
         
         function getDistance(touches) {
             let dx = touches[0].clientX - touches[1].clientX;
@@ -43,12 +52,16 @@
             event.preventDefault();
             scale += event.deltaY * -0.01;
             scale = Math.min(Math.max(1, scale), 4);
-            img.style.transform = `scale(${scale})`;
+            img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
         });
         
         img.addEventListener("touchstart", (event) => {
             if (event.touches.length === 2) {
                 startDistance = getDistance(event.touches);
+            } else if (event.touches.length === 1) {
+                isDragging = true;
+                startX = event.touches[0].clientX - posX;
+                startY = event.touches[0].clientY - posY;
             }
         }, false);
         
@@ -57,9 +70,17 @@
                 let newDistance = getDistance(event.touches);
                 scale *= newDistance / startDistance;
                 scale = Math.min(Math.max(1, scale), 4);
-                img.style.transform = `scale(${scale})`;
+                img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
                 startDistance = newDistance;
+            } else if (event.touches.length === 1 && isDragging) {
+                posX = event.touches[0].clientX - startX;
+                posY = event.touches[0].clientY - startY;
+                img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
             }
+        }, false);
+        
+        img.addEventListener("touchend", () => {
+            isDragging = false;
         }, false);
     </script>
 </body>
