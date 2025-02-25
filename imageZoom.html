@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Zoom</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+        .container {
+            touch-action: none;
+            position: relative;
+            overflow: hidden;
+        }
+        img {
+            max-width: 100%;
+            transform-origin: center;
+            transition: transform 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="image" src="your-image.jpg" alt="Zoomable Image">
+    </div>
+    <script>
+        let img = document.getElementById("image");
+        let scale = 1, startDistance = 0;
+        
+        function getDistance(touches) {
+            let dx = touches[0].clientX - touches[1].clientX;
+            let dy = touches[0].clientY - touches[1].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        img.addEventListener("wheel", (event) => {
+            event.preventDefault();
+            scale += event.deltaY * -0.01;
+            scale = Math.min(Math.max(1, scale), 4);
+            img.style.transform = `scale(${scale})`;
+        });
+        
+        img.addEventListener("touchstart", (event) => {
+            if (event.touches.length === 2) {
+                startDistance = getDistance(event.touches);
+            }
+        }, false);
+        
+        img.addEventListener("touchmove", (event) => {
+            if (event.touches.length === 2) {
+                let newDistance = getDistance(event.touches);
+                scale *= newDistance / startDistance;
+                scale = Math.min(Math.max(1, scale), 4);
+                img.style.transform = `scale(${scale})`;
+                startDistance = newDistance;
+            }
+        }, false);
+    </script>
+</body>
+</html>
