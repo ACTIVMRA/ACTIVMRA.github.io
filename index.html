@@ -101,22 +101,18 @@
             isDragging = false;
         }, false);
 
-        function toggleFullScreen() {
+        function enterFullScreen() {
             if (!document.fullscreenElement) {
                 container.requestFullscreen().catch(err => {
                     console.error(`Erreur: Impossible d'activer le mode plein écran: ${err.message}`);
                 });
-            } else {
-                document.exitFullscreen();
             }
         }
 
-        fullscreenBtn.addEventListener("click", toggleFullScreen);
+        fullscreenBtn.addEventListener("click", enterFullScreen);
 
         document.addEventListener("DOMContentLoaded", () => {
-            setInterval(() => {
-                fullscreenBtn.click();
-            }, 5000);
+            setTimeout(enterFullScreen, 1000); // Tente d'activer le plein écran après 1s
         });
     </script>
 </body>
