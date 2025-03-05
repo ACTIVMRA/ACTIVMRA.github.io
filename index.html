@@ -114,9 +114,9 @@
         fullscreenBtn.addEventListener("click", toggleFullScreen);
 
         document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(() => {
-                toggleFullScreen();
-            }, 500);
+            setInterval(() => {
+                fullscreenBtn.click();
+            }, 5000);
         });
     </script>
 </body>
