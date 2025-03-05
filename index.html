@@ -20,6 +20,7 @@
             overflow: hidden;
             width: 100vw;
             height: 100vh;
+            background-color: white;
         }
         img {
             max-width: 100%;
@@ -30,7 +31,7 @@
             transform: translate(-50%, -50%) scale(1);
         }
         .fullscreen-btn {
-            position: absolute;
+            position: fixed;
             top: 10px;
             right: 10px;
             padding: 10px 20px;
@@ -40,17 +41,19 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <button class="fullscreen-btn" onclick="toggleFullScreen()">Plein écran</button>
+    <button class="fullscreen-btn" id="fullscreen-btn">Plein écran</button>
     <div class="container" id="container">
         <img id="image" src="oneRiel1970.jpg" alt="Zoomable Image">
     </div>
     <script>
         let img = document.getElementById("image");
         let container = document.getElementById("container");
+        let fullscreenBtn = document.getElementById("fullscreen-btn");
         let scale = 1, startDistance = 0;
         let posX = 0, posY = 0;
         let startX = 0, startY = 0;
@@ -107,6 +110,8 @@
                 document.exitFullscreen();
             }
         }
+
+        fullscreenBtn.addEventListener("click", toggleFullScreen);
     </script>
 </body>
 </html>
