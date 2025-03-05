@@ -104,7 +104,7 @@
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 container.requestFullscreen().catch(err => {
-                    alert(`Erreur: Impossible d'activer le mode plein écran: ${err.message}`);
+                    console.error(`Erreur: Impossible d'activer le mode plein écran: ${err.message}`);
                 });
             } else {
                 document.exitFullscreen();
@@ -112,6 +112,12 @@
         }
 
         fullscreenBtn.addEventListener("click", toggleFullScreen);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                toggleFullScreen();
+            }, 500);
+        });
     </script>
 </body>
 </html>
