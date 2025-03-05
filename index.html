@@ -12,6 +12,7 @@
             height: 100vh;
             overflow: hidden;
             background-color: #f0f0f0;
+            margin: 0;
         }
         .container {
             touch-action: none;
@@ -28,14 +29,28 @@
             top: 50%;
             transform: translate(-50%, -50%) scale(1);
         }
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <button class="fullscreen-btn" onclick="toggleFullScreen()">Plein écran</button>
+    <div class="container" id="container">
         <img id="image" src="oneRiel1970.jpg" alt="Zoomable Image">
     </div>
     <script>
         let img = document.getElementById("image");
+        let container = document.getElementById("container");
         let scale = 1, startDistance = 0;
         let posX = 0, posY = 0;
         let startX = 0, startY = 0;
@@ -82,6 +97,16 @@
         img.addEventListener("touchend", () => {
             isDragging = false;
         }, false);
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    alert(`Erreur: Impossible d'activer le mode plein écran: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
     </script>
 </body>
 </html>
