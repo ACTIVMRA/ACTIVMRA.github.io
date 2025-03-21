@@ -6,31 +6,91 @@
     <title>Carousel</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; position: relative; }
+        
         .carousel-container { overflow: hidden; width: 80vw; height: 60vh; position: relative; }
         .carousel { display: flex; transition: transform 0.3s ease-out; }
-        .slide { min-width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .slide img { width: 100%; height: 100%; object-fit: cover; }
+        .slide { min-width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+
+        /* Popup */
+        .popup {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 80%;
+            display: none;
+            z-index: 10;
+        }
+        .popup h2 { margin-bottom: 10px; }
+        .popup p { margin-bottom: 0; }
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="carousel-container">
         <div class="carousel" id="carousel">
-            <div class="slide"><img src="ACTIVMRA.github.io/roupi.jpg" alt="Image 1"></div>
-             <div class="slide"><img src="ACTIVMRA.github.io/euro.jpg" alt="Image 2"></div>
-             <div class="slide"><img src="ACTIVMRA.github.io/kh.jpg" alt="Image 3"></div>
-             <div class="slide"><img src="ACTIVMRA.github.io/livre.jpg" alt="Image 4"></div>
-             <div class="slide"><img src="ACTIVMRA.github.io/oneRiel1970.jpg" alt="Image 5"></div>
+            <div class="slide" data-index="0"><img src="https://ACTIVMRA.github.io/roupi.jpg" alt="Image 1"></div>
+            <div class="slide" data-index="1"><img src="https://ACTIVMRA.github.io/euro.jpg" alt="Image 2"></div>
+            <div class="slide" data-index="2"><img src="https://ACTIVMRA.github.io/kh.jpg" alt="Image 3"></div>
+            <div class="slide" data-index="3"><img src="https://ACTIVMRA.github.io/livre.jpg" alt="Image 4"></div>
+            <div class="slide" data-index="4"><img src="https://ACTIVMRA.github.io/oneRiel1970.jpg" alt="Image 5"></div>
         </div>
     </div>
+    
+    <!-- Popup -->
+    <div id="popup" class="popup">
+        <button class="popup-close" onclick="closePopup()">X</button>
+        <h2>Title: Image 1</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra volutpat massa, eu dignissim urna laoreet in. Sed sit amet lacinia nulla.</p>
+    </div>
+
     <script>
         const carousel = document.getElementById('carousel');
         let isDragging = false, startX = 0, currentTranslate = 0, prevTranslate = 0, index = 0;
         const slides = document.querySelectorAll('.slide');
+        const slideWidth = slides[0].offsetWidth;
         
+        // Popup functionality
+        const popup = document.getElementById('popup');
+        let popupImageIndex = 0;
+        
+        function showPopup(imageIndex) {
+            const titles = ['Image 1', 'Image 2', 'Image 3', 'Image 4', 'Image 5'];
+            const descriptions = [
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra volutpat massa, eu dignissim urna laoreet in. Sed sit amet lacinia nulla.',
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et volutpat justo. Integer viverra sit amet sapien non dictum.',
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sit amet magna sit amet ante convallis vehicula vel sit amet nunc.',
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat nibh at ultricies elementum. Nulla id orci a nulla feugiat.',
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac metus eget turpis tincidunt sollicitudin sed a justo.'
+            ];
+            popup.querySelector('h2').textContent = `Title: ${titles[imageIndex]}`;
+            popup.querySelector('p').textContent = descriptions[imageIndex];
+            popup.style.display = 'block';
+        }
+
+        function closePopup() {
+            popup.style.display = 'none';
+        }
+
+        // Carousel drag functionality
         function setCarouselPosition() {
             carousel.style.transition = 'transform 0.3s ease-out';
-            carousel.style.transform = `translateX(${-index * 100}%)`;
+            carousel.style.transform = `translateX(${-index * slideWidth}px)`;
         }
 
         function startDrag(clientX) {
@@ -45,22 +105,41 @@
             carousel.style.transform = `translateX(${prevTranslate + diff}px)`;
         }
 
-        function endDrag(clientX) {
+        function endDrag() {
             isDragging = false;
-            const diff = clientX - startX;
-            if (diff < -50 && index < slides.length - 1) index++;
-            if (diff > 50 && index > 0) index--;
+            const movedBy = currentTranslate - prevTranslate;
+            if (movedBy < -50 && index < slides.length - 1) index++;
+            if (movedBy > 50 && index > 0) index--;
             setCarouselPosition();
-            prevTranslate = -index * carousel.offsetWidth;
+            prevTranslate = -index * slideWidth;
         }
 
-        carousel.addEventListener('mousedown', (e) => startDrag(e.clientX));
-        window.addEventListener('mousemove', (e) => isDragging && moveDrag(e.clientX));
-        window.addEventListener('mouseup', (e) => isDragging && endDrag(e.clientX));
+        carousel.addEventListener('mousedown', (e) => {
+            startDrag(e.clientX);
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) moveDrag(e.clientX);
+        });
+        window.addEventListener('mouseup', () => {
+            if (isDragging) endDrag();
+        });
 
-        carousel.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
-        window.addEventListener('touchmove', (e) => isDragging && moveDrag(e.touches[0].clientX));
-        window.addEventListener('touchend', (e) => isDragging && endDrag(e.changedTouches[0].clientX));
+        carousel.addEventListener('touchstart', (e) => {
+            startDrag(e.touches[0].clientX);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging) moveDrag(e.touches[0].clientX);
+        });
+        window.addEventListener('touchend', () => {
+            if (isDragging) endDrag();
+        });
+
+        // Make each image clickable and show popup
+        slides.forEach((slide, idx) => {
+            slide.addEventListener('click', () => {
+                showPopup(idx);
+            });
+        });
     </script>
 </body>
 </html>
