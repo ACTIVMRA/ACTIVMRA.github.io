@@ -16,22 +16,21 @@
 <body>
     <div class="carousel-container">
         <div class="carousel" id="carousel">
-            <div class="slide"><img src="ACTIVMRA.github.io/roupi.jpg" alt="Image 1"></div>
-            <div class="slide"><img src="ACTIVMRA.github.io/euro.jpg" alt="Image 2"></div>
-            <div class="slide"><img src="ACTIVMRA.github.io/kh.jpg" alt="Image 3"></div>
-            <div class="slide"><img src="ACTIVMRA.github.io/livre.jpg" alt="Image 4"></div>
-            <div class="slide"><img src="ACTIVMRA.github.io/oneRiel1970.jpg" alt="Image 5"></div>
+            <div class="slide"><img src="https://ACTIVMRA.github.io/roupi.jpg" alt="Image 1"></div>
+            <div class="slide"><img src="https://ACTIVMRA.github.io/euro.jpg" alt="Image 2"></div>
+            <div class="slide"><img src="https://ACTIVMRA.github.io/kh.jpg" alt="Image 3"></div>
+            <div class="slide"><img src="https://ACTIVMRA.github.io/livre.jpg" alt="Image 4"></div>
+            <div class="slide"><img src="https://ACTIVMRA.github.io/oneRiel1970.jpg" alt="Image 5"></div>
         </div>
     </div>
     <script>
         const carousel = document.getElementById('carousel');
         let isDragging = false, startX = 0, currentTranslate = 0, prevTranslate = 0, index = 0;
         const slides = document.querySelectorAll('.slide');
-        const slideWidth = slides[0].offsetWidth;
-
+        
         function setCarouselPosition() {
             carousel.style.transition = 'transform 0.3s ease-out';
-            carousel.style.transform = `translateX(${-index * slideWidth}px)`;
+            carousel.style.transform = `translateX(${-index * 100}%)`;
         }
 
         function startDrag(clientX) {
@@ -46,34 +45,22 @@
             carousel.style.transform = `translateX(${prevTranslate + diff}px)`;
         }
 
-        function endDrag() {
+        function endDrag(clientX) {
             isDragging = false;
-            const movedBy = currentTranslate - prevTranslate;
-            if (movedBy < -50 && index < slides.length - 1) index++;
-            if (movedBy > 50 && index > 0) index--;
+            const diff = clientX - startX;
+            if (diff < -50 && index < slides.length - 1) index++;
+            if (diff > 50 && index > 0) index--;
             setCarouselPosition();
-            prevTranslate = -index * slideWidth;
+            prevTranslate = -index * carousel.offsetWidth;
         }
 
-        carousel.addEventListener('mousedown', (e) => {
-            startDrag(e.clientX);
-        });
-        window.addEventListener('mousemove', (e) => {
-            if (isDragging) moveDrag(e.clientX);
-        });
-        window.addEventListener('mouseup', () => {
-            if (isDragging) endDrag();
-        });
+        carousel.addEventListener('mousedown', (e) => startDrag(e.clientX));
+        window.addEventListener('mousemove', (e) => isDragging && moveDrag(e.clientX));
+        window.addEventListener('mouseup', (e) => isDragging && endDrag(e.clientX));
 
-        carousel.addEventListener('touchstart', (e) => {
-            startDrag(e.touches[0].clientX);
-        });
-        window.addEventListener('touchmove', (e) => {
-            if (isDragging) moveDrag(e.touches[0].clientX);
-        });
-        window.addEventListener('touchend', () => {
-            if (isDragging) endDrag();
-        });
+        carousel.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
+        window.addEventListener('touchmove', (e) => isDragging && moveDrag(e.touches[0].clientX));
+        window.addEventListener('touchend', (e) => isDragging && endDrag(e.changedTouches[0].clientX));
     </script>
 </body>
 </html>
