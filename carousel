@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
+        .carousel-container { overflow: hidden; width: 80vw; height: 60vh; position: relative; }
+        .carousel { display: flex; transition: transform 0.3s ease-out; }
+        .slide { min-width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-size: 2rem; background: #ddd; }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <div class="carousel" id="carousel">
+            <div class="slide" style="background: #FF5733;">Section 1</div>
+            <div class="slide" style="background: #33FF57;">Section 2</div>
+            <div class="slide" style="background: #3357FF;">Section 3</div>
+            <div class="slide" style="background: #F3FF33;">Section 4</div>
+            <div class="slide" style="background: #FF33A1;">Section 5</div>
+        </div>
+    </div>
+    <script>
+        const carousel = document.getElementById('carousel');
+        let isDragging = false, startX = 0, currentTranslate = 0, prevTranslate = 0, index = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function setCarouselPosition() {
+            carousel.style.transform = `translateX(${-index * 100}%)`;
+        }
+        
+        function startDrag(clientX) {
+            isDragging = true;
+            startX = clientX;
+        }
+        
+        function moveDrag(clientX) {
+            if (!isDragging) return;
+            const diff = clientX - startX;
+            currentTranslate = prevTranslate + diff;
+            carousel.style.transform = `translateX(${currentTranslate}px)`;
+        }
+        
+        function endDrag() {
+            isDragging = false;
+            const movedBy = currentTranslate - prevTranslate;
+            if (movedBy < -50 && index < slides.length - 1) index++;
+            if (movedBy > 50 && index > 0) index--;
+            setCarouselPosition();
+            prevTranslate = -index * 100;
+        }
+        
+        carousel.addEventListener('mousedown', (e) => startDrag(e.clientX));
+        window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
+        window.addEventListener('mouseup', endDrag);
+        
+        carousel.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
+        window.addEventListener('touchmove', (e) => moveDrag(e.touches[0].clientX));
+        window.addEventListener('touchend', endDrag);
+    </script>
+</body>
+</html>
