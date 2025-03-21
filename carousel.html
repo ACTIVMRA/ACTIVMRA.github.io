@@ -107,10 +107,15 @@
         function endDrag() {
             isDragging = false;
             const movedBy = currentTranslate - prevTranslate;
-            if (movedBy < -50 && index < slides.length - 1) index++;
-            if (movedBy > 50 && index > 0) index--;
+            if (movedBy < -50 && index < slides.length - 1) {
+                index++;  // Move to next image
+            }
+            if (movedBy > 50 && index > 0) {
+                index--;  // Move to previous image
+            }
             setCarouselPosition();
             prevTranslate = -index * slideWidth;
+            currentTranslate = prevTranslate;  // Update currentTranslate for the next drag
         }
 
         carousel.addEventListener('mousedown', (e) => {
@@ -142,3 +147,4 @@
     </script>
 </body>
 </html>
+
