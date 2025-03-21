@@ -9,56 +9,71 @@
         body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
         .carousel-container { overflow: hidden; width: 80vw; height: 60vh; position: relative; }
         .carousel { display: flex; transition: transform 0.3s ease-out; }
-        .slide { min-width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-size: 2rem; background: #ddd; }
+        .slide { min-width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
     <div class="carousel-container">
         <div class="carousel" id="carousel">
-            <div class="slide" style="background: #FF5733;">Section 1</div>
-            <div class="slide" style="background: #33FF57;">Section 2</div>
-            <div class="slide" style="background: #3357FF;">Section 3</div>
-            <div class="slide" style="background: #F3FF33;">Section 4</div>
-            <div class="slide" style="background: #FF33A1;">Section 5</div>
+            <div class="slide"><img src="roupi.jpg" alt="Image 1"></div>
+            <div class="slide"><img src="euro.jpg" alt="Image 2"></div>
+            <div class="slide"><img src="kh.jpg" alt="Image 3"></div>
+            <div class="slide"><img src="livre.jpg" alt="Image 4"></div>
+            <div class="slide"><img src="oneRiel1970.jpg" alt="Image 5"></div>
         </div>
     </div>
     <script>
         const carousel = document.getElementById('carousel');
         let isDragging = false, startX = 0, currentTranslate = 0, prevTranslate = 0, index = 0;
         const slides = document.querySelectorAll('.slide');
-        
+        const slideWidth = slides[0].offsetWidth;
+
         function setCarouselPosition() {
-            carousel.style.transform = `translateX(${-index * 100}%)`;
+            carousel.style.transition = 'transform 0.3s ease-out';
+            carousel.style.transform = `translateX(${-index * slideWidth}px)`;
         }
-        
+
         function startDrag(clientX) {
             isDragging = true;
             startX = clientX;
+            carousel.style.transition = 'none';
         }
-        
+
         function moveDrag(clientX) {
             if (!isDragging) return;
             const diff = clientX - startX;
-            currentTranslate = prevTranslate + diff;
-            carousel.style.transform = `translateX(${currentTranslate}px)`;
+            carousel.style.transform = `translateX(${prevTranslate + diff}px)`;
         }
-        
+
         function endDrag() {
             isDragging = false;
             const movedBy = currentTranslate - prevTranslate;
             if (movedBy < -50 && index < slides.length - 1) index++;
             if (movedBy > 50 && index > 0) index--;
             setCarouselPosition();
-            prevTranslate = -index * 100;
+            prevTranslate = -index * slideWidth;
         }
-        
-        carousel.addEventListener('mousedown', (e) => startDrag(e.clientX));
-        window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
-        window.addEventListener('mouseup', endDrag);
-        
-        carousel.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
-        window.addEventListener('touchmove', (e) => moveDrag(e.touches[0].clientX));
-        window.addEventListener('touchend', endDrag);
+
+        carousel.addEventListener('mousedown', (e) => {
+            startDrag(e.clientX);
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) moveDrag(e.clientX);
+        });
+        window.addEventListener('mouseup', () => {
+            if (isDragging) endDrag();
+        });
+
+        carousel.addEventListener('touchstart', (e) => {
+            startDrag(e.touches[0].clientX);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging) moveDrag(e.touches[0].clientX);
+        });
+        window.addEventListener('touchend', () => {
+            if (isDragging) endDrag();
+        });
     </script>
 </body>
 </html>
