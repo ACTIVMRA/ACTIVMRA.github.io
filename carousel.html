@@ -3,19 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carousel Simple</title>
+    <title>Carousel Drag</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
         
         .carousel-container { position: relative; width: 80vw; max-width: 600px; overflow: hidden; }
-        .carousel { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel { display: flex; transition: transform 0.3s ease-out; cursor: grab; }
         .slide { min-width: 100%; display: flex; justify-content: center; align-items: center; }
         .slide img { width: 100%; height: auto; cursor: pointer; }
-
-        /* Boutons */
-        .controls { margin-top: 10px; }
-        button { padding: 10px 15px; font-size: 16px; cursor: pointer; margin: 5px; }
 
         /* Popup */
         .popup {
@@ -37,15 +33,10 @@
 
     <div class="carousel-container">
         <div class="carousel" id="carousel">
-            <div class="slide"><img src="https://ACTIVMRA.github.io/kh.jpg" alt="Image 1"></div>
+            <div class="slide"><img src="https://via.placeholder.com/600x300/FF5733/FFFFFF?text=Image+1" alt="Image 1"></div>
             <div class="slide"><img src="https://via.placeholder.com/600x300/33FF57/FFFFFF?text=Image+2" alt="Image 2"></div>
             <div class="slide"><img src="https://via.placeholder.com/600x300/3357FF/FFFFFF?text=Image+3" alt="Image 3"></div>
         </div>
-    </div>
-
-    <div class="controls">
-        <button onclick="prevSlide()">⬅ Précédent</button>
-        <button onclick="nextSlide()">Suivant ➡</button>
     </div>
 
     <!-- Popup -->
@@ -56,34 +47,55 @@
     </div>
 
     <script>
+        const carousel = document.getElementById('carousel');
         let currentIndex = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
-        const carousel = document.getElementById('carousel');
+        let startX = 0;
+        let isDragging = false;
 
         function updateCarousel() {
+            carousel.style.transition = 'transform 0.3s ease-out';
             carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
         }
 
-        function nextSlide() {
-            if (currentIndex < totalSlides - 1) {
+        // Drag functionality
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.touches ? e.touches[0].clientX : e.clientX;
+            carousel.style.transition = 'none';
+        }
+
+        function moveDrag(e) {
+            if (!isDragging) return;
+            let currentX = e.touches ? e.touches[0].clientX : e.clientX;
+            let diff = currentX - startX;
+            carousel.style.transform = `translateX(${-currentIndex * 100 + diff / window.innerWidth * 100}%)`;
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            let endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+            let diff = endX - startX;
+
+            if (diff < -50 && currentIndex < totalSlides - 1) {
                 currentIndex++;
-            } else {
-                currentIndex = 0; // Revient au début
-            }
-            updateCarousel();
-        }
-
-        function prevSlide() {
-            if (currentIndex > 0) {
+            } else if (diff > 50 && currentIndex > 0) {
                 currentIndex--;
-            } else {
-                currentIndex = totalSlides - 1; // Va à la dernière image
             }
             updateCarousel();
         }
 
-        // Popup
+        carousel.addEventListener('mousedown', startDrag);
+        carousel.addEventListener('mousemove', moveDrag);
+        carousel.addEventListener('mouseup', endDrag);
+        carousel.addEventListener('mouseleave', endDrag);
+        carousel.addEventListener('touchstart', startDrag);
+        carousel.addEventListener('touchmove', moveDrag);
+        carousel.addEventListener('touchend', endDrag);
+
+        // Popup functionality
         const popup = document.getElementById('popup');
         const popupTitle = document.getElementById('popup-title');
         const popupText = document.getElementById('popup-text');
