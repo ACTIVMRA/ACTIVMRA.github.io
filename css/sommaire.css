@@ -1,0 +1,142 @@
+#arrow {
+    position: absolute;
+    top: 588px;
+    left: 386px;
+    width: 50px;
+    height: 50px;
+    background: url(../images/common/forward.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#choice {
+    position: absolute;
+    top: 520px;
+    left: 308px;
+    width: 235px;
+    height: 48px;
+    color: white;
+    font-size: 18px;
+}
+
+#choice #choiceText {
+    text-align: center;
+    vertical-align: middle;
+    width: 235px;
+    height: 48px;
+    display: table-cell;
+    /* font-family: "Avenir"; */
+}
+
+#menuItem1 {
+    position: absolute;
+    top: 116px;
+    left: 747px;
+    width: 602px;
+    height: 602px;
+    background: url(../images/sommaire/red.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#menuItem2 {
+    position: absolute;
+    top: 116px;
+    left: 1224px;
+    width: 602px;
+    height: 602px;
+    background: url(../images/sommaire/yellow.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#menuItem3 {
+    position: absolute;
+    top: 575px;
+    left: 751px;
+    width: 598px;
+    height: 505px;
+    background: url(../images/sommaire/blue.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#menuItem4 {
+    position: absolute;
+    top: 544px;
+    left: 1318px;
+    width: 602px;
+    height: 536px;
+    background: url(../images/sommaire/purple.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.menuItemTitle {
+    /* position: absolute;
+    top: 155px;
+    left: 145px;
+    width: 330px;
+    height: 48px;
+    color: white;
+    font-size: 48px;
+    text-align: center;
+    font-family: "Avenir"; */
+    width: 330px;
+    height: 250px;
+    color: white;
+    font-size: 40px;
+    text-align: center;
+    font-family: "Avenir";
+    padding-left: 145px;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.menuItemDescription {
+    /* position: absolute;
+    top: 309px;
+    left: 130px;
+    width: 315px;
+    height: 48px;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    font-family: "Avenir"; */
+    position: absolute;
+    top: 270px;
+    left: 130px;
+    width: 315px;
+    height: 301px;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    font-family: "Avenir";
+}
+
+.menuItemDescriptionkh {
+    font-family: "Battambang";
+}
+
+.menuItemDescriptionfr,
+.menuItemDescriptionen {
+    font-family: "Avenir";
+}
+
+.menuItemTitlekh {
+    font-family: "Battambang";
+}
+
+.menuItemTitlefr,
+.menuItemTitleen {
+    font-family: "Avenir";
+}
+
+.choiceTextkh {
+    font-family: "Battambang";
+}
+
+.choiceTextfr,
+.choiceTexten {
+    font-family: "Avenir";
+}
